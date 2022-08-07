@@ -65,7 +65,7 @@ export default function OppositeContentTimeline({ data }: TimeLine) {
               
               />
           )
-        })}
+        }).splice(0,8)}
       </Timeline>
     </>
   );

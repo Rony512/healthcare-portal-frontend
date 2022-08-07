@@ -24,7 +24,7 @@ export interface IPatient {
 //Requests
 export interface IRequestDetailProps {
     _id: string;
-    patient: IPatient;
+    patientData: IPatient;
 }
 
 export interface IPhysicalExam {

@@ -27,18 +27,21 @@ const Dashboard = () => {
     { field: 'patientName', headerName: 'Nombre', flex: 200 },
     { field: 'patientLastName', headerName: 'Apellido', flex: 200 },
     { field: 'patientAge', headerName: 'Edad', flex: 200 },
-    { field: 'actions', headerName: 'Acciones', flex: 200 }
   ];
 
   const fetchDashboardInfo = async () => {
     let allPatients = await getAllPatients()
     let allRequests = await getAllRequests()
 
-    if (allPatients) setPatientLoading(false)
-    if (allRequests) setRequestLoading(false)
+    if (allPatients) {
+      setPatients(allPatients)
+      setPatientLoading(false)
+    }
+    if (allRequests) {
+      setRequestLoading(false)
+      setRequests(allRequests.reverse())
+    }
 
-    setPatients(allPatients)
-    setRequests(allRequests)
   }
 
   const handleRedirect = (route: string) => {
@@ -73,7 +76,7 @@ const Dashboard = () => {
         <Card>
           <CardContent>
             <Typography sx={{ fontSize: 14 }} color="text.secondary" >
-              Últimas 10 consultas
+              Últimas 8 consultas
             </Typography>
           </CardContent>
         </Card>

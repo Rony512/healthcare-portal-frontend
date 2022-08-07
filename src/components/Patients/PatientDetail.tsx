@@ -6,7 +6,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import List from '../Layouts/List'
 import BottomNav from '../Nav/BottomNav'
 import Loading from '../Loading/Loading'
-import Dialog from '../Dialog/Dialog'
 import RequestDetail from '../Requests/RequestDetail'
 
 //Interfaces
@@ -83,7 +82,7 @@ const PatientDetail = () => {
 
     const elements = [
         renderButton(param?.id),
-        <Dialog />
+        <RequestDetail _id={param?.id || ''} patientData={patient} />
     ]
 
     const renderPage = () => {
@@ -166,7 +165,7 @@ const PatientDetail = () => {
                             elevation={3}
                             component="ul"
                         >
-                            <List requests={patient.requestHistory} />
+                            <List title={'Historial de consultas'} requests={patient.requestHistory} />
                         </Paper>}
                     </div>
                 </Box>

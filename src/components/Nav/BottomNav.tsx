@@ -6,9 +6,9 @@ const BottomNav = ({ elements }: Element) => {
     return (
         <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0, alignItems: 'center' }}>
             <Toolbar>
-                {elements.map(elem => {
+                {elements.map((elem, index) => {
                     return (
-                        <div style={{ margin: '5px' }}>
+                        <div key={index} style={{ margin: '5px' }}>
                             {elem}
                         </div>)
                 })}
