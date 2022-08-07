@@ -1,0 +1,55 @@
+.container {
+    margin: 10px 10px 90px 10px;
+}
+
+
+
+.dashboard > .container {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: 33% 33% 33%;
+    gap: 1em;
+    grid-auto-flow: row;
+    grid-template-areas: "count1 count2 timeline"
+        "request-table request-table timeline"
+        "request-table request-table timeline"
+        "request-table request-table timeline";
+}
+
+.timeline {
+    overflow: auto;
+    grid-area: timeline;
+    max-height: 85vh;
+}
+
+.request-table {
+    grid-area: request-table;
+}
+
+.count1 {
+    grid-area: count1;
+}
+
+.count2 {
+    grid-area: count2;
+}
+
+
+.login {
+    background: #0F2027;
+    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    height: 100vh;
+
+}
+
+.centerButton {
+    width: 150px;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
