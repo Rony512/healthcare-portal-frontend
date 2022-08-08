@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Container from '../components/Layouts/Container'
 import TimeLine from '../components/TimeLine/TimeLine'
 import Table from '../components/Table/Table'
-import CircularLoading from '../components/Loading/CircleLoading'
+import CircularLoading from '../components/Feedback/CircleLoading'
 import BottomNav from '../components/Nav/BottomNav'
 import { GridColDef } from '@mui/x-data-grid'
 
@@ -27,18 +27,21 @@ const Dashboard = () => {
     { field: 'patientName', headerName: 'Nombre', flex: 200 },
     { field: 'patientLastName', headerName: 'Apellido', flex: 200 },
     { field: 'patientAge', headerName: 'Edad', flex: 200 },
-    { field: 'actions', headerName: 'Acciones', flex: 200 }
   ];
 
   const fetchDashboardInfo = async () => {
     let allPatients = await getAllPatients()
     let allRequests = await getAllRequests()
 
-    if (allPatients) setPatientLoading(false)
-    if (allRequests) setRequestLoading(false)
+    if (allPatients) {
+      setPatients(allPatients)
+      setPatientLoading(false)
+    }
+    if (allRequests) {
+      setRequestLoading(false)
+      setRequests(allRequests.reverse())
+    }
 
-    setPatients(allPatients)
-    setRequests(allRequests)
   }
 
   const handleRedirect = (route: string) => {
@@ -73,7 +76,7 @@ const Dashboard = () => {
         <Card>
           <CardContent>
             <Typography sx={{ fontSize: 14 }} color="text.secondary" >
-              Últimas 10 consultas
+              Últimas 8 consultas
             </Typography>
           </CardContent>
         </Card>

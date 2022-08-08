@@ -5,8 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 
 import List from '../Layouts/List'
 import BottomNav from '../Nav/BottomNav'
-import Loading from '../Loading/Loading'
-import Dialog from '../Dialog/Dialog'
+import Loading from '../Feedback/Loading'
 import RequestDetail from '../Requests/RequestDetail'
 
 //Interfaces
@@ -83,7 +82,7 @@ const PatientDetail = () => {
 
     const elements = [
         renderButton(param?.id),
-        <Dialog />
+        param?.id === 'new' ? '' : <RequestDetail _id={param?.id || ''} patientData={patient} />
     ]
 
     const renderPage = () => {
@@ -98,12 +97,7 @@ const PatientDetail = () => {
 
         return (
             <div>
-                <Box
-                    component="form"
-                    sx={{ '& > :not(style)': { m: 2 } }}
-                    noValidate
-                    autoComplete="off"
-                >
+                <Box sx={{ '& > :not(style)': { m: 2 } }}>
                     <TextField type='' label="Nombre" variant="outlined" value={patientName}
                         onChange={e => setPatient({ ...patient, patientName: e.target.value })} />
 
@@ -125,50 +119,46 @@ const PatientDetail = () => {
                     <TextField type='number' label="Teléfono 2" variant="outlined" value={patientMobile_2.toString()}
                         onChange={e => setPatient({ ...patient, patientMobile_2: parseInt(e.target.value) })} />
 
-                    <div style={{ marginBottom: '60px', display: '' }}>
-                        {patient.patientAllergies.length > 0 && <Paper
-                            sx={{
-                                listStyle: 'none',
-                                p: 1,
-                                m: 1,
-                            }}
-                            elevation={3}
-                            component="ul"
-                        >
-                            <TextField
-                                value={allergie}
-                                onKeyDown={e => e.key === 'Enter' ? handleAddAllergie(allergie) : ''}
-                                type='text'
-                                label="Alergias"
-                                variant="outlined"
-                                onChange={e => setAllergie(e.target.value)}
-                                helperText="Presiona Enter para agregar"
-                            />
-                            <ListItem>
-                                {patient.patientAllergies.map((data, index) => {
-                                    return (
-                                        <Chip key={index}
-                                            color='info'
-                                            label={data}
-                                            onDelete={handleRemoveAllergie(data)}
-                                        />
-                                    );
-                                })}
-                            </ListItem>
-                        </Paper>}
 
-                        {patient.requestHistory.length > 0 && <Paper
-                            sx={{
-                                listStyle: 'none',
-                                p: 1,
-                                m: 1,
-                            }}
-                            elevation={3}
-                            component="ul"
-                        >
-                            <List requests={patient.requestHistory} />
-                        </Paper>}
-                    </div>
+                    <Paper
+                        sx={{ listStyle: 'none', p: 1, m: 1 }}
+                        elevation={3}
+                        component="ul"
+                    >
+                        <TextField
+                            value={allergie}
+                            onKeyDown={e => e.key === 'Enter' ? handleAddAllergie(allergie) : ''}
+                            type='text'
+                            label="Alergias"
+                            variant="outlined"
+                            onChange={e => setAllergie(e.target.value)}
+                            helperText="Presiona Enter para agregar"
+                        />
+                        <ListItem>
+                            {patient.patientAllergies.map((data, index) => {
+                                return (
+                                    <Chip key={index}
+                                        color='info'
+                                        label={data}
+                                        onDelete={handleRemoveAllergie(data)}
+                                    />
+                                );
+                            })}
+                        </ListItem>
+                    </Paper>
+
+                    {patient.requestHistory.length > 0 && <Paper
+                        sx={{
+                            listStyle: 'none',
+                            p: 1,
+                            m: 1,
+                        }}
+                        elevation={3}
+                        component="ul"
+                    >
+                        <List title={'Historial de consultas'} requests={patient.requestHistory} />
+                    </Paper>}
+                    <div style={{ marginBottom: '60px' }}></div>
                 </Box>
                 <BottomNav elements={elements} />
             </div>
