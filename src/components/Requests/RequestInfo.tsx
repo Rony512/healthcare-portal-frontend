@@ -38,16 +38,23 @@ function RequestInfo() {
 
     const handleUpdate = async (status: string) => {
         setRequest({ ...request, requestStatus: status })
-        const patientData: IPatient = await getPatient(request.patientId)
-        patientData.requestHistory.map(history => {
-            if (history.requestId === param?.id) history.requestStatus = status
-        })
-        request.requestStatus = status
-        request.updatedBy = user?.email || ''
+        try {
+            const patientData: IPatient = await getPatient(request.patientId)
+            patientData.requestHistory.map(history => {
+                if (history.requestId === param?.id) history.requestStatus = status
+            })
+            request.requestStatus = status
+            request.updatedBy = user?.email || ''
 
-        const requestUpdated = await updatePatient(request.patientId, patientData)
+            const requestUpdated = await updatePatient(request.patientId, patientData)
 
-        if (requestUpdated) updateRequest(param?.id || '', request)
+            if (requestUpdated) {
+                updateRequest(param?.id || '', request)
+                toast.success("Consulta actualizada con éxito")
+            }
+        } catch (error) {
+            toast.error("Hubo un error al actualizar la consulta")
+        }
 
     }
 
