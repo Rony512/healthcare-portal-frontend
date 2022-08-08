@@ -107,6 +107,7 @@ function RequestInfo() {
                 {formRequest()}
             </fieldset>
             {request.requestStatus === 'OPEN' ? < BottomNav elements={[renderButton('Actualizar', 'OPEN'), renderButton('Cerrar', 'CLOSED')]} /> : ''}
+            <div style={{ marginBottom: '60px' }}></div>
         </div>
     )
 }

@@ -159,6 +159,7 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                         onChange={e => setRequest({ ...request, diagnose: e.target.value })} helperText={diagnose ? "" : "Requerido"} />
                     <TextField rows={4} required sx={{ width: '30%' }} multiline label="Prescripción" variant="outlined" value={prescription}
                         onChange={e => setRequest({ ...request, prescription: e.target.value })} />
+                    <div style={{ marginBottom: '60px' }}></div>
                 </Box>
             </div>
         )

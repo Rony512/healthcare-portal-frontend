@@ -15,8 +15,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface Pages {
-    name:string;
-    path:string;
+    name: string;
+    path: string;
 }
 
 const pages: Pages[] = [];
@@ -83,9 +83,9 @@ const ResponsiveAppBar = () => {
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Link to='/' style={{ textDecoration: 'none' }}>
-                    <Typography variant="h6" sx={style.typography} >
-                        LOGO
-                    </Typography>
+                        <Typography variant="h6" sx={style.typography} >
+                            LOGO
+                        </Typography>
                     </Link>
                     {/* Mobile Menu */}
                     <Box sx={style.box}>
@@ -123,10 +123,9 @@ const ResponsiveAppBar = () => {
 
                     <Typography
                         variant="h5"
-                        noWrap
                         sx={style.typography_xl}
                     >
-                        LOGO
+                        <Link to='/' style={{ textDecoration: 'none' }}>LOGO</Link>
                     </Typography>
 
                     {/* Desktop Menu */}
