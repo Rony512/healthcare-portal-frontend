@@ -15,6 +15,7 @@ import { createRequest } from '../../pages/api/requests';
 import { updatePatient } from '../../pages/api/patients';
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { toast } from 'react-toastify'
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '../Nav/BottomNav';
@@ -43,7 +44,7 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
 
     const defaultRequest = {
         patientId: _id,
-        requestType: "",
+        requestType: "BASIC",
         requestStatus: "OPEN",
         patientName: patientName,
         patientAge: patientAge,
@@ -78,25 +79,28 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
 
     const handleCreateRequest = async () => {
         console.log('The request ', request)
-        const response = await createRequest(request)
-        console.log("Response for creation", response)
-        let requestHistory = {
-            date: moment().format(),
-            title: request.condition,
-            requestId: response?._id,
-            requestStatus: 'OPEN'
+        try {
+            const response = await createRequest(request)
+            console.log("Response for creation", response)
+            let requestHistory = {
+                date: moment().format(),
+                title: request.condition,
+                requestId: response?._id,
+                requestStatus: 'OPEN'
+            }
+            patientData.requestHistory.push(requestHistory)
+            patientData.updatedBy = user?.email || ''
+
+            if (response) {
+                const updateResponse = await updatePatient(_id, patientData)
+                if (updateResponse) {
+                    handleClose()
+                    toast.success("Consulta agregada con éxito")
+                }
+            }
+        } catch (error) {
+            toast.error("Hubo un error al agregar la consulta")
         }
-        patientData.requestHistory.push(requestHistory)
-        patientData.updatedBy = user?.email || ''
-
-        if (response) {
-            const updateResponse = await updatePatient(_id, patientData)
-            console.log("response for update", updateResponse)
-
-            if (updateResponse) handleClose()
-
-        }
-
     }
 
     const formRequest = () => {
@@ -110,12 +114,13 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
 
         return (
             <div>
-                <Box sx={{ '& > :not(style)': { m: 2 } }} >
+
+                <Box sx={{ '& > :not(style)': { m: 2, width: 300 } }} >
                     <TextField disabled label="Nombre" variant="outlined" value={patientName} />
 
                     <TextField disabled label="Edad" variant="outlined" value={patientAge} />
 
-                    <FormControl sx={{ minWidth: 200 }} >
+                    <FormControl sx={{ minWidth: 300 }} >
                         <InputLabel id="demo-simple-select-label">Tipo de Consulta</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -128,12 +133,12 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                             })}
                         </Select>
                     </FormControl>
-                    <Paper
+                    {patientAllergies.length > 0 && <Paper
                         aria-label=''
                         sx={{ listStyle: 'none', p: 1 }}
                         elevation={3}
                         component="ul"
-                    >
+                    > Alergias:
                         <ListItem>
                             {patientAllergies.map((data, index) => {
                                 return <Chip key={index}
@@ -142,8 +147,7 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                                 />
                             })}
                         </ListItem>
-                    </Paper>
-
+                    </Paper>}
                     <TextField multiline label="Inspección" variant="outlined" value={inspection}
                         onChange={e => setRequest({ ...request, physicalExam: { ...physicalExam, inspection: e.target.value } })} />
                     <TextField multiline label="Palpación" variant="outlined" value={palpation}
@@ -152,15 +156,19 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                         onChange={e => setRequest({ ...request, physicalExam: { ...physicalExam, auscultation: e.target.value } })} />
                     <TextField multiline label="Percusión" variant="outlined" value={percussion}
                         onChange={e => setRequest({ ...request, physicalExam: { ...physicalExam, percussion: e.target.value } })} />
+                </Box>
 
+
+                <Box sx={{ '& > :not(style)': { m: 2, minWidth: 100 } }} >
                     <TextField rows={4} required error={condition ? false : true} sx={{ width: '30%' }} multiline label="Padecimiento" variant="outlined" value={condition}
                         onChange={e => setRequest({ ...request, condition: e.target.value })} helperText={condition ? "" : "Requerido"} />
                     <TextField rows={4} required error={diagnose ? false : true} sx={{ width: '30%' }} multiline label="Diagnostico" variant="outlined" value={diagnose}
                         onChange={e => setRequest({ ...request, diagnose: e.target.value })} helperText={diagnose ? "" : "Requerido"} />
                     <TextField rows={4} required sx={{ width: '30%' }} multiline label="Prescripción" variant="outlined" value={prescription}
                         onChange={e => setRequest({ ...request, prescription: e.target.value })} />
-                    <div style={{ marginBottom: '60px' }}></div>
                 </Box>
+
+                <div style={{ marginBottom: '60px' }}></div>
             </div>
         )
     }

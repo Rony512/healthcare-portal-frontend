@@ -2,6 +2,7 @@ import { Box, Button, Chip, Paper, styled, TextField } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
+import { toast } from 'react-toastify'
 
 import List from '../Layouts/List'
 import BottomNav from '../Nav/BottomNav'
@@ -53,11 +54,17 @@ const PatientDetail = () => {
         setDisableButton(true)
         const createdBy: string = user?.email || ''
         patientData.createdBy = createdBy
-        const response = await createPatient(patient)
-        if (response) {
-            console.log(response)
+
+        try {
+            const response = await createPatient(patient)
+            if (response?._id) {
+                toast.success("Paciente agregado con éxito")
+                setDisableButton(false)
+                navigate(`/patients/${response?._id}`)
+            }
+        } catch (error) {
             setDisableButton(false)
-            navigate(`/patients/${response?._id}`)
+            toast.error("Error al agregar paciente")
         }
     }
 
@@ -65,9 +72,18 @@ const PatientDetail = () => {
         setDisableButton(true)
         const updatedBy: string = user?.email || ''
         patientData.updatedBy = updatedBy
-        const response = await updatePatient(patientId, patient)
 
-        if (response) setDisableButton(false)
+        try {
+            const response = await updatePatient(patientId, patient)
+            if (response) {
+                setDisableButton(false)
+                toast.success("Paciente actualizado con éxito")
+            }
+        } catch (error) {
+            console.log(error)
+            setDisableButton(false)
+            toast.error("Error al actualizar paciente")
+        }
     }
 
     const renderButton = (type: string = '') => {
@@ -98,22 +114,22 @@ const PatientDetail = () => {
         return (
             <div>
                 <Box sx={{ '& > :not(style)': { m: 2 } }}>
-                    <TextField type='' label="Nombre" variant="outlined" value={patientName}
+                    <TextField required error={patientName?false:true} label="Nombre" variant="outlined" value={patientName}
                         onChange={e => setPatient({ ...patient, patientName: e.target.value })} />
 
-                    <TextField type='' label="Apellido" variant="outlined" value={patientLastName}
+                    <TextField required error={patientName?false:true} label="Apellido" variant="outlined" value={patientLastName}
                         onChange={e => setPatient({ ...patient, patientLastName: e.target.value })} />
 
-                    <TextField type='number' label="Edad" variant="outlined" value={patientAge.toString()}
+                    <TextField  required error={patientName?false:true} type='number' label="Edad" variant="outlined" value={patientAge.toString()}
                         onChange={e => setPatient({ ...patient, patientAge: parseInt(e.target.value) })} />
 
-                    <TextField type='number' label="Peso (kg)" variant="outlined" value={patientWeight.toString()}
+                    <TextField  required error={patientName?false:true} type='number' label="Peso (kg)" variant="outlined" value={patientWeight.toString()}
                         onChange={e => setPatient({ ...patient, patientWeight: parseInt(e.target.value) })} />
 
-                    <TextField type='number' label="Altura (cm)" variant="outlined" value={patientHeight.toString()}
+                    <TextField  required error={patientName?false:true} type='number' label="Altura (cm)" variant="outlined" value={patientHeight.toString()}
                         onChange={e => setPatient({ ...patient, patientHeight: parseInt(e.target.value) })} />
 
-                    <TextField type='number' label="Teléfono 1" variant="outlined" value={patientMobile_1.toString()}
+                    <TextField required error={patientName?false:true} type='number' label="Teléfono 1" variant="outlined" value={patientMobile_1.toString()}
                         onChange={e => setPatient({ ...patient, patientMobile_1: parseInt(e.target.value) })} />
 
                     <TextField type='number' label="Teléfono 2" variant="outlined" value={patientMobile_2.toString()}
