@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Container from '../components/Layouts/Container'
 import TimeLine from '../components/TimeLine/TimeLine'
 import Table from '../components/Table/Table'
-import CircularLoading from '../components/Loading/CircleLoading'
+import CircularLoading from '../components/Feedback/CircleLoading'
 import BottomNav from '../components/Nav/BottomNav'
 import { GridColDef } from '@mui/x-data-grid'
 

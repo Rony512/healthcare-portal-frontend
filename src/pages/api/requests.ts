@@ -17,3 +17,8 @@ export const createRequest = async (body: IRequest) => {
     const response = await axios.post(`${URI}/request`, body)
     return response.data
 }
+
+export const updateRequest = async (_id: string, body: IRequest) => {
+    const response = await axios.patch(`${URI}/request/${_id}`, body)
+    return response.data
+}

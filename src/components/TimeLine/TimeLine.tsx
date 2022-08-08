@@ -9,10 +9,11 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 interface Object {
-  _id:string;
-  patientId:string;
+  _id: string;
+  patientId: string;
   createdAt: string;
   patientName: string;
+  requestStatus: string
 }
 
 interface TimeLine {
@@ -28,20 +29,23 @@ export default function OppositeContentTimeline({ data }: TimeLine) {
   }
 
   interface Props {
-    patientId:string;
-    _id:string
+    patientId: string;
+    _id: string
     left: string;
     right: string;
+    status: string;
   }
 
-  const RenderItem = ({ left, right, patientId, _id }: Props) => {
+  const RenderItem = ({ left, right, patientId, _id, status }: Props) => {
     return (
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
           <Link style={style.link} to={`/requests/${_id}`}>{left}</Link>
         </TimelineOppositeContent>
         <TimelineSeparator>
-          <TimelineDot variant="outlined" color='primary' />
+          <TimelineDot variant='filled' color={status === 'OPEN' ? 'success' : 'error'} >
+            
+          </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent>
@@ -56,16 +60,17 @@ export default function OppositeContentTimeline({ data }: TimeLine) {
       <Timeline position="left">
         {data.map((value, index) => {
           return (
-            <RenderItem 
-              key={index} 
+            <RenderItem
+              key={index}
               _id={value._id}
               patientId={value.patientId}
-              left={moment(value.createdAt).format('llll')} 
+              left={moment(value.createdAt).format('llll')}
               right={value.patientName}
-              
-              />
+              status={value.requestStatus}
+
+            />
           )
-        }).splice(0,8)}
+        }).splice(0, 8)}
       </Timeline>
     </>
   );

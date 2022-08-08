@@ -17,6 +17,7 @@ import { updatePatient } from '../../pages/api/patients';
 import { useAuth0 } from '@auth0/auth0-react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import BottomNav from '../Nav/BottomNav';
 
 const Transition = (props: TransitionProps & { children: ReactElement; }, ref: Ref<unknown>) => {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -42,7 +43,8 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
 
     const defaultRequest = {
         patientId: _id,
-        requestType: "BASIC",
+        requestType: "",
+        requestStatus: "OPEN",
         patientName: patientName,
         patientAge: patientAge,
         condition: "",
@@ -54,7 +56,8 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
         },
         diagnose: "",
         prescription: "",
-        createdBy: user?.email || ""
+        createdBy: user?.email || "",
+        updatedBy: ""
     }
 
     const [request, setRequest] = useState<IRequest>(defaultRequest)
@@ -74,12 +77,14 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
     }
 
     const handleCreateRequest = async () => {
+        console.log('The request ', request)
         const response = await createRequest(request)
         console.log("Response for creation", response)
         let requestHistory = {
             date: moment().format(),
             title: request.condition,
-            requestId: response?._id
+            requestId: response?._id,
+            requestStatus: 'OPEN'
         }
         patientData.requestHistory.push(requestHistory)
         patientData.updatedBy = user?.email || ''
@@ -105,15 +110,10 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
 
         return (
             <div>
-                <Box
-                    component="form"
-                    sx={{ '& > :not(style)': { m: 2 } }}
-                    noValidate
-                    autoComplete="off"
-                >
+                <Box sx={{ '& > :not(style)': { m: 2 } }} >
                     <TextField disabled label="Nombre" variant="outlined" value={patientName} />
 
-                    <TextField disabled label="Nombre" variant="outlined" value={patientAge} />
+                    <TextField disabled label="Edad" variant="outlined" value={patientAge} />
 
                     <FormControl sx={{ minWidth: 200 }} >
                         <InputLabel id="demo-simple-select-label">Tipo de Consulta</InputLabel>
@@ -129,12 +129,8 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                         </Select>
                     </FormControl>
                     <Paper
-                        aria-label='kease'
-                        sx={{
-                            listStyle: 'none',
-                            p: 1,
-                            m: 1,
-                        }}
+                        aria-label=''
+                        sx={{ listStyle: 'none', p: 1 }}
                         elevation={3}
                         component="ul"
                     >
@@ -148,9 +144,6 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                         </ListItem>
                     </Paper>
 
-
-                    <TextField error={condition ? false : true} fullWidth multiline label="Padecimiento" variant="outlined" value={condition}
-                        onChange={e => setRequest({ ...request, condition: e.target.value })} helperText={condition ? "" : "*Requerido"} />
                     <TextField multiline label="Inspección" variant="outlined" value={inspection}
                         onChange={e => setRequest({ ...request, physicalExam: { ...physicalExam, inspection: e.target.value } })} />
                     <TextField multiline label="Palpación" variant="outlined" value={palpation}
@@ -160,9 +153,11 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                     <TextField multiline label="Percusión" variant="outlined" value={percussion}
                         onChange={e => setRequest({ ...request, physicalExam: { ...physicalExam, percussion: e.target.value } })} />
 
-                    <TextField error={diagnose ? false : true} fullWidth multiline label="Diagnostico" variant="outlined" value={diagnose}
-                        onChange={e => setRequest({ ...request, diagnose: e.target.value })} helperText={diagnose ? "" : "*Requerido"} />
-                    <TextField fullWidth multiline label="Prescripción" variant="outlined" value={prescription}
+                    <TextField rows={4} required error={condition ? false : true} sx={{ width: '30%' }} multiline label="Padecimiento" variant="outlined" value={condition}
+                        onChange={e => setRequest({ ...request, condition: e.target.value })} helperText={condition ? "" : "Requerido"} />
+                    <TextField rows={4} required error={diagnose ? false : true} sx={{ width: '30%' }} multiline label="Diagnostico" variant="outlined" value={diagnose}
+                        onChange={e => setRequest({ ...request, diagnose: e.target.value })} helperText={diagnose ? "" : "Requerido"} />
+                    <TextField rows={4} required sx={{ width: '30%' }} multiline label="Prescripción" variant="outlined" value={prescription}
                         onChange={e => setRequest({ ...request, prescription: e.target.value })} />
                 </Box>
             </div>
@@ -177,11 +172,14 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
     return (
         <div>
             <Button variant="contained" color='success' onClick={handleClickOpen}>
-                Crear Consulta
+                Iniciar Consulta
             </Button>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transitions} >
-                <AppBar sx={{ position: 'relative' }}>
+                <AppBar sx={{ position: 'relative', backgroundColor: 'black' }}>
                     <Toolbar>
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                            Nueva Consulta
+                        </Typography>
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -190,15 +188,14 @@ const RequestDetail = ({ _id, patientData }: IRequestDetailProps) => {
                         >
                             <CloseIcon />
                         </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                            Creando Consulta
-                        </Typography>
-                        <Button color="inherit" onClick={handleCreateRequest}>
-                            Guardar
-                        </Button>
                     </Toolbar>
                 </AppBar>
                 {formRequest()}
+                <BottomNav elements={[
+                    <Button color='success' variant='contained' onClick={handleCreateRequest}>
+                        Guardar
+                    </Button>]
+                } />
             </Dialog>
         </div>
     );

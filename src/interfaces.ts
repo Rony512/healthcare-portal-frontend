@@ -4,6 +4,7 @@ export interface IRequestHistory {
     date: string;
     title: string;
     requestId: string;
+    requestStatus: string
 }
 
 export interface IPatient {
@@ -37,6 +38,7 @@ export interface IPhysicalExam {
 export interface IRequest {
     patientId: string;
     requestType: string;
+    requestStatus: string;
     patientName: string;
     patientAge: number;
     condition: string;
@@ -44,6 +46,7 @@ export interface IRequest {
     diagnose: string;
     prescription: string;
     createdBy: string;
+    updatedBy: string;
 }
 
 // Components

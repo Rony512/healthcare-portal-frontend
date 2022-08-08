@@ -12,6 +12,7 @@ interface Data {
     requestId:string;
     title: string;
     date: string;
+    requestStatus:string
 }
 
 interface RequestList {
@@ -36,7 +37,7 @@ export default function FolderList({ title, requests }: RequestList) {
                                     <WorkIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary={request.title} secondary={moment(request.date).format('LLLL')} />
+                            <ListItemText primary={`${request.title} (${request.requestStatus})`} secondary={moment(request.date).format('LLLL')} />
                         </ListItem>
                     </ListItemButton>
 

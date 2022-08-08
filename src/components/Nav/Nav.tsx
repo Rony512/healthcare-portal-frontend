@@ -12,12 +12,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const pages = [
-    { name: 'Dashboard', path: 'dashboard' },
-    { name: 'Pacientes', path: 'patients' },
-    { name: 'Consultas', path: 'requests' }];
+interface Pages {
+    name:string;
+    path:string;
+}
+
+const pages: Pages[] = [];
 
 const style = {
     typography: {
@@ -48,6 +50,7 @@ const style = {
 
 const ResponsiveAppBar = () => {
     const { user, logout } = useAuth0()
+    const navigate = useNavigate()
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -79,9 +82,11 @@ const ResponsiveAppBar = () => {
         <AppBar position="sticky">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
+                    <Link to='/' style={{ textDecoration: 'none' }}>
                     <Typography variant="h6" sx={style.typography} >
                         LOGO
                     </Typography>
+                    </Link>
                     {/* Mobile Menu */}
                     <Box sx={style.box}>
                         <IconButton onClick={handleOpenNavMenu} color="inherit" >
@@ -105,7 +110,7 @@ const ResponsiveAppBar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
+                            {pages.length > 0 && pages.map((page) => (
                                 <Link key={page.name} to={page.path} style={{ textDecoration: 'none' }}>
                                     <MenuItem key={page.name} onClick={handleCloseNavMenu}>
                                         <Typography textAlign="center">{page.name}</Typography>
